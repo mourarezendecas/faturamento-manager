@@ -1,2 +1,4 @@
-# faturamento-manager
-Repositório contendo um sistema que desenvolvi ao identificar alguns gaps técnicos.
+# API - Faturamento manager
+
+## Documentações
+    - Diagrama de entidade relacionamento
