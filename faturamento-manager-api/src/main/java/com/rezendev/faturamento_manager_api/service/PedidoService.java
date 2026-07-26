@@ -1,7 +1,6 @@
 package com.rezendev.faturamento_manager_api.service;
 
 import com.rezendev.faturamento_manager_api.exception.IdNotFoundException;
-import com.rezendev.faturamento_manager_api.mapper.ClienteMapper;
 import com.rezendev.faturamento_manager_api.mapper.ItemMapper;
 import com.rezendev.faturamento_manager_api.mapper.PedidoMapper;
 import com.rezendev.faturamento_manager_api.model.dto.ItemDTO;
@@ -59,5 +58,10 @@ public class PedidoService {
         Pedido pedidoAtualizado = pedidoRepository.save(pedido);
 
         return PedidoMapper.entityToDTO(pedidoAtualizado);
+    }
+
+    public void removePedido(Long pedidoId) {
+        pedidoRepository.findById(pedidoId).orElseThrow(IdNotFoundException::new);
+        pedidoRepository.deleteById(pedidoId);
     }
 }

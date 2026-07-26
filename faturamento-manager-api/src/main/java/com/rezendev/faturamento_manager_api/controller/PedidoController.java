@@ -42,9 +42,15 @@ public class PedidoController {
         return pedidoService.adicionarItens(id, itens);
     }
 
-    @GetMapping("/{idPedido}/itens")
+    @GetMapping("/{id}/itens")
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemDTO> listarItensPedido(@PathVariable Long idPedido){
-        return itemService.listarItensPorPedido(idPedido);
+    public List<ItemDTO> listarItensPedido(@PathVariable Long id){
+        return itemService.listarItensPorPedido(id);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletarPedido(@PathVariable Long id){
+        pedidoService.removePedido(id);
     }
 }
