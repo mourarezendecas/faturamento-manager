@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,12 +20,15 @@ public class ItemDTO {
 
     private Long id;
 
-    private LocalDateTime dataPedido;
+    @NotNull(message = "A descricao do item e obrigatoria")
+    private String descricao;
 
-    @NotNull(message = "O id do cliente e obrigatorio")
-    private Long idCliente;
+    @NotNull(message = "A quantidade de itens e obrigatoria")
+    private Integer quantidade;
 
-    @NotEmpty(message = "O pedido deve ter ao menos um item")
-    @Valid
-    private List<ItemDTO> itens;
+    @NotNull(message = "O preco unitario e obrigatorio")
+    private BigDecimal precoUnitario;
+
+    @NotNull(message = "O id do pedido e obrigatorio")
+    private Long idPedido;
 }

@@ -16,16 +16,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PedidoDTO {
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "Data do pedido não deve ser nula!")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonProperty("data_pedido")
     private LocalDateTime dataPedido;
 
     @NotBlank(message = "ID do cliente não deve ser nulo!")
     @JsonProperty("id_cliente")
-    private Integer clienteID;
+    private Long clienteID;
 
     private List<ItemDTO> itens;
 }
