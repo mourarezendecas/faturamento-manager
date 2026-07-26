@@ -1,0 +1,29 @@
+Table cartaoFidelidade {
+  id integer [primary key]
+  pontos integer [not null]
+  id_cliente integer [not null]
+}
+
+Table cliente {
+  id integer [primary key]
+  nome varchar(255) [not null]
+  email varchar(255) [not null]
+}
+
+Table pedido {
+  id integer [primary key]
+  data_pedidao timestamp [not null]
+  id_cliente integer [not null]
+}
+
+Table item {
+  id integer [primary key]
+  descricao text [not null]
+  quantidade integer [not null]
+  preco_unitario decimal [not null]
+  id_pedido integer [not null]
+}
+
+Ref: cartaoFidelidade.id_cliente - cliente.id
+Ref: cliente.id < pedido.id_cliente
+Ref: pedido.id < item.id_pedido
