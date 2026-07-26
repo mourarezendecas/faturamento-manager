@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -19,12 +20,11 @@ public class Pedido {
     @Column(name = "data_pedido", nullable = false)
     private LocalDateTime dataPedido;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "pedido",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @Builder.Default
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> itens = new ArrayList<>();
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,11 +22,10 @@ public class Cliente {
     @Column(nullable = false, length = 255)
     private String email;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private CartaoFidelidade cartaoFidelidade;
 
-    @OneToMany(mappedBy = "cliente",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @Builder.Default
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pedido> pedidos = new ArrayList<>();
 }
