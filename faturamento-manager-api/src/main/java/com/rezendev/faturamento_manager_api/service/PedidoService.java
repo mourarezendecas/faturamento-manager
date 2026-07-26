@@ -12,10 +12,4 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
-
-    public List<PedidoDTO> listarPedidos(){
-        List<Pedido> pedidos = pedidoRepository.findAll();
-        return pedidos;
-    }
-
 }

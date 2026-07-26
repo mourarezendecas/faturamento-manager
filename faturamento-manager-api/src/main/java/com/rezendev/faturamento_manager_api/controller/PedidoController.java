@@ -18,13 +18,4 @@ import java.util.List;
 public class PedidoController {
 
     private final PedidoService pedidoService;
-
-    @GetMapping
-    public ResponseEntity<List<PedidoDTO>> listarTodos(
-            @RequestParam(name = "idCliente", required = false) Long idCliente) {
-        if (idCliente != null) {
-            return ResponseEntity.ok(pedidoService.buscarPorCliente(idCliente));
-        }
-        return ResponseEntity.ok(pedidoService.listarTodos());
-    }
 }
