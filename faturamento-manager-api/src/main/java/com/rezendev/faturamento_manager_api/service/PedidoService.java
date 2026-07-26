@@ -2,9 +2,12 @@ package com.rezendev.faturamento_manager_api.service;
 
 import com.rezendev.faturamento_manager_api.exception.IdNotFoundException;
 import com.rezendev.faturamento_manager_api.mapper.ClienteMapper;
+import com.rezendev.faturamento_manager_api.mapper.ItemMapper;
 import com.rezendev.faturamento_manager_api.mapper.PedidoMapper;
+import com.rezendev.faturamento_manager_api.model.dto.ItemDTO;
 import com.rezendev.faturamento_manager_api.model.dto.PedidoDTO;
 import com.rezendev.faturamento_manager_api.model.entity.Cliente;
+import com.rezendev.faturamento_manager_api.model.entity.Item;
 import com.rezendev.faturamento_manager_api.model.entity.Pedido;
 import com.rezendev.faturamento_manager_api.repository.ClienteRepository;
 import com.rezendev.faturamento_manager_api.repository.PedidoRepository;
@@ -42,5 +45,19 @@ public class PedidoService {
     public List<PedidoDTO> listarPedidos() {
         List<Pedido> pedidos = pedidoRepository.findAll();
         return pedidos.stream().map(PedidoMapper::entityToDTO).toList();
+    }
+
+    public PedidoDTO adicionarItens(Long pedidoId, List<ItemDTO> itensDTO) {
+        Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow(IdNotFoundException::new);
+
+        List<Item> novosItens = itensDTO.stream()
+                .map(ItemMapper::dtoToEntity)
+                .peek(item -> item.setPedido(pedido))
+                .toList();
+
+        pedido.getItens().addAll(novosItens);
+        Pedido pedidoAtualizado = pedidoRepository.save(pedido);
+
+        return PedidoMapper.entityToDTO(pedidoAtualizado);
     }
 }

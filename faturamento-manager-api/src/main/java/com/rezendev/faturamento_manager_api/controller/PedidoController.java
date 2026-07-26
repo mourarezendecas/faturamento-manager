@@ -1,12 +1,11 @@
 package com.rezendev.faturamento_manager_api.controller;
 
-import com.rezendev.faturamento_manager_api.exception.IdNotFoundException;
+import com.rezendev.faturamento_manager_api.model.dto.ItemDTO;
 import com.rezendev.faturamento_manager_api.model.dto.PedidoDTO;
-import com.rezendev.faturamento_manager_api.model.entity.Pedido;
+import com.rezendev.faturamento_manager_api.service.ItemService;
 import com.rezendev.faturamento_manager_api.service.PedidoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,10 +16,11 @@ import java.util.List;
 public class PedidoController {
 
     private final PedidoService pedidoService;
+    private final ItemService itemService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PedidoDTO salvar(@RequestBody PedidoDTO pedidoDTO) {
+    public PedidoDTO criarPedido(@RequestBody PedidoDTO pedidoDTO) {
         return pedidoService.criarPedido(pedidoDTO);
     }
 
@@ -34,5 +34,17 @@ public class PedidoController {
     @ResponseStatus(HttpStatus.OK)
     public List<PedidoDTO> listarPedidos() {
         return pedidoService.listarPedidos();
+    }
+
+    @PostMapping("/{id}/itens")
+    @ResponseStatus(HttpStatus.OK)
+    public PedidoDTO adicionarItens(@PathVariable Long id, @RequestBody List<ItemDTO> itens) {
+        return pedidoService.adicionarItens(id, itens);
+    }
+
+    @GetMapping("/{idPedido}/itens")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDTO> listarItensPedido(@PathVariable Long idPedido){
+        return itemService.listarItensPorPedido(idPedido);
     }
 }
