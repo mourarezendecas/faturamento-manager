@@ -16,8 +16,7 @@ API REST desenvolvida com Spring Boot para gerenciamento de clientes, pedidos, i
 
 ## Documentações
 
-- Diagrama Entidade-Relacionamento (DER)
-- Documentação da API (Swagger/OpenAPI) *(caso implemente futuramente)*
+- [Diagrama Entidade-Relacionamento](https://github.com/mourarezendecas/faturamento-manager/blob/dev/Documenta%C3%A7%C3%A3o/faturamento-manager.png)
 
 ---
 
