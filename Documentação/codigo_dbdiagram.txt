@@ -14,6 +14,7 @@ Table pedido {
   id integer [primary key]
   data_pedidao timestamp [not null]
   id_cliente integer [not null]
+  status text
 }
 
 Table item {

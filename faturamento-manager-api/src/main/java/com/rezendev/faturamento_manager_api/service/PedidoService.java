@@ -8,6 +8,7 @@ import com.rezendev.faturamento_manager_api.model.dto.PedidoDTO;
 import com.rezendev.faturamento_manager_api.model.entity.Cliente;
 import com.rezendev.faturamento_manager_api.model.entity.Item;
 import com.rezendev.faturamento_manager_api.model.entity.Pedido;
+import com.rezendev.faturamento_manager_api.model.enums.StatusEnum;
 import com.rezendev.faturamento_manager_api.repository.ClienteRepository;
 import com.rezendev.faturamento_manager_api.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,5 +64,15 @@ public class PedidoService {
     public void removePedido(Long pedidoId) {
         pedidoRepository.findById(pedidoId).orElseThrow(IdNotFoundException::new);
         pedidoRepository.deleteById(pedidoId);
+    }
+
+    @Transactional
+    public PedidoDTO atualizarStatus(Long pedidoId, StatusEnum novoStatus) {
+        Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow(IdNotFoundException::new);
+
+        pedido.setStatus(novoStatus);
+        Pedido pedidoAtualizado = pedidoRepository.save(pedido);
+
+        return PedidoMapper.entityToDTO(pedidoAtualizado);
     }
 }

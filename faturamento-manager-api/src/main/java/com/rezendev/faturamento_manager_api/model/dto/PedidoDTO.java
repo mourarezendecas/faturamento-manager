@@ -2,6 +2,7 @@ package com.rezendev.faturamento_manager_api.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rezendev.faturamento_manager_api.model.enums.StatusEnum;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,4 +28,6 @@ public class PedidoDTO {
     private Long clienteID;
 
     private List<ItemDTO> itens;
+
+    private StatusEnum status;
 }

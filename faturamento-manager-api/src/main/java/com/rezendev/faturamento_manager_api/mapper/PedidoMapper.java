@@ -18,6 +18,7 @@ public class PedidoMapper {
                                 .map(ItemMapper::entityToDTO)
                                 .collect(Collectors.toList())
                 )
+                .status(pedido.getStatus())
                 .build();
     }
 

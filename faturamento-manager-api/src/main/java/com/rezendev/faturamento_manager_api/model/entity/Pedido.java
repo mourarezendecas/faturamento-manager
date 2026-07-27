@@ -1,5 +1,6 @@
 package com.rezendev.faturamento_manager_api.model.entity;
 
+import com.rezendev.faturamento_manager_api.model.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,4 +28,8 @@ public class Pedido {
     @Builder.Default
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> itens = new ArrayList<>();
+
+    @Builder.Default
+    @Column(nullable = false)
+    private StatusEnum status = StatusEnum.CRIADO;
 }

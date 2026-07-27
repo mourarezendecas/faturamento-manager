@@ -1,5 +1,6 @@
 package com.rezendev.faturamento_manager_api.controller;
 
+import com.rezendev.faturamento_manager_api.model.dto.AtualizarStatusDTO;
 import com.rezendev.faturamento_manager_api.model.dto.ItemDTO;
 import com.rezendev.faturamento_manager_api.model.dto.PedidoDTO;
 import com.rezendev.faturamento_manager_api.service.ItemService;
@@ -52,5 +53,11 @@ public class PedidoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletarPedido(@PathVariable Long id){
         pedidoService.removePedido(id);
+    }
+
+    @PatchMapping("/{id}/status")
+    @ResponseStatus(HttpStatus.OK)
+    public PedidoDTO atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusDTO statusDTO) {
+        return pedidoService.atualizarStatus(id, statusDTO.getStatus());
     }
 }
