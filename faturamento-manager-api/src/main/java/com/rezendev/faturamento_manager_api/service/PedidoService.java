@@ -42,9 +42,11 @@ public class PedidoService {
     }
 
     @Transactional(readOnly = true)
-    public List<PedidoDTO> listarPedidos() {
-        List<Pedido> pedidos = pedidoRepository.findAll();
-        return pedidos.stream().map(PedidoMapper::entityToDTO).toList();
+    public List<PedidoDTO> listarPedidos(StatusEnum status, Long idCliente) {
+        return pedidoRepository.findByFiltros(status, idCliente)
+                .stream()
+                .map(PedidoMapper::entityToDTO)
+                .toList();
     }
 
     public PedidoDTO adicionarItens(Long pedidoId, List<ItemDTO> itensDTO) {

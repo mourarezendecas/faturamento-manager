@@ -3,6 +3,7 @@ package com.rezendev.faturamento_manager_api.controller;
 import com.rezendev.faturamento_manager_api.model.dto.AtualizarStatusDTO;
 import com.rezendev.faturamento_manager_api.model.dto.ItemDTO;
 import com.rezendev.faturamento_manager_api.model.dto.PedidoDTO;
+import com.rezendev.faturamento_manager_api.model.enums.StatusEnum;
 import com.rezendev.faturamento_manager_api.service.ItemService;
 import com.rezendev.faturamento_manager_api.service.PedidoService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,11 @@ public class PedidoController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<PedidoDTO> listarPedidos() {
-        return pedidoService.listarPedidos();
+    public List<PedidoDTO> listarPedidos(
+            @RequestParam(required = false) StatusEnum status,
+            @RequestParam(required = false) Long idCliente
+    ) {
+        return pedidoService.listarPedidos(status, idCliente);
     }
 
     @PostMapping("/{id}/itens")
