@@ -49,6 +49,7 @@ public class PedidoService {
                 .toList();
     }
 
+    @Transactional
     public PedidoDTO adicionarItens(Long pedidoId, List<ItemDTO> itensDTO) {
         Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow(IdNotFoundException::new);
 
@@ -63,6 +64,7 @@ public class PedidoService {
         return PedidoMapper.entityToDTO(pedidoAtualizado);
     }
 
+    @Transactional
     public void removePedido(Long pedidoId) {
         pedidoRepository.findById(pedidoId).orElseThrow(IdNotFoundException::new);
         pedidoRepository.deleteById(pedidoId);

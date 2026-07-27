@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -66,13 +65,38 @@ class PedidoServiceTest {
     @Test
     void deveCriarPedidoComSucesso() {
         Long clienteId = 1L;
-        PedidoDTO pedidoDTORequisicao = mock(PedidoDTO.class);
-        Cliente cliente = mock(Cliente.class);
-        Pedido pedidoParaSalvar = mock(Pedido.class);
-        Pedido pedidoSalvo = mock(Pedido.class);
-        PedidoDTO pedidoDTOResposta = mock(PedidoDTO.class);
+        LocalDateTime dataPedido = LocalDateTime.now();
 
-        when(pedidoDTORequisicao.getClienteID()).thenReturn(clienteId);
+        PedidoDTO pedidoDTORequisicao = PedidoDTO.builder()
+                .dataPedido(dataPedido)
+                .clienteID(clienteId)
+                .build();
+
+        Cliente cliente = Cliente.builder()
+                .id(clienteId)
+                .nome("Fulano")
+                .email("fulano@email.com")
+                .build();
+
+        Pedido pedidoParaSalvar = Pedido.builder()
+                .dataPedido(dataPedido)
+                .cliente(cliente)
+                .build();
+
+        Pedido pedidoSalvo = Pedido.builder()
+                .id(10L)
+                .dataPedido(dataPedido)
+                .cliente(cliente)
+                .status(StatusEnum.CRIADO)
+                .build();
+
+        PedidoDTO pedidoDTOResposta = PedidoDTO.builder()
+                .id(10L)
+                .dataPedido(dataPedido)
+                .clienteID(clienteId)
+                .status(StatusEnum.CRIADO)
+                .build();
+
         when(clienteRepository.findById(clienteId)).thenReturn(Optional.of(cliente));
         pedidoMapperMock.when(() -> PedidoMapper.DTOToEntity(pedidoDTORequisicao, cliente))
                 .thenReturn(pedidoParaSalvar);
@@ -90,8 +114,11 @@ class PedidoServiceTest {
     @Test
     void deveLancarExcecaoAoCriarPedidoComClienteInexistente() {
         Long clienteId = 99L;
-        PedidoDTO pedidoDTORequisicao = mock(PedidoDTO.class);
-        when(pedidoDTORequisicao.getClienteID()).thenReturn(clienteId);
+        PedidoDTO pedidoDTORequisicao = PedidoDTO.builder()
+                .dataPedido(LocalDateTime.now())
+                .clienteID(clienteId)
+                .build();
+
         when(clienteRepository.findById(clienteId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> pedidoService.criarPedido(pedidoDTORequisicao))
@@ -105,8 +132,8 @@ class PedidoServiceTest {
     @Test
     void deveListarPedidoPorIdComSucesso() {
         Long pedidoId = 1L;
-        Pedido pedido = mock(Pedido.class);
-        PedidoDTO pedidoDTO = mock(PedidoDTO.class);
+        Pedido pedido = Pedido.builder().id(pedidoId).status(StatusEnum.CRIADO).build();
+        PedidoDTO pedidoDTO = PedidoDTO.builder().id(pedidoId).status(StatusEnum.CRIADO).build();
 
         when(pedidoRepository.findById(pedidoId)).thenReturn(Optional.of(pedido));
         pedidoMapperMock.when(() -> PedidoMapper.entityToDTO(pedido)).thenReturn(pedidoDTO);
@@ -129,13 +156,13 @@ class PedidoServiceTest {
 
     @Test
     void deveListarPedidosComFiltros() {
-        StatusEnum status = StatusEnum.FATURADO; // ajuste para um valor válido do seu enum
+        StatusEnum status = StatusEnum.CRIADO;
         Long idCliente = 1L;
 
-        Pedido pedido1 = mock(Pedido.class);
-        Pedido pedido2 = mock(Pedido.class);
-        PedidoDTO dto1 = mock(PedidoDTO.class);
-        PedidoDTO dto2 = mock(PedidoDTO.class);
+        Pedido pedido1 = Pedido.builder().id(1L).status(status).build();
+        Pedido pedido2 = Pedido.builder().id(2L).status(status).build();
+        PedidoDTO dto1 = PedidoDTO.builder().id(1L).status(status).build();
+        PedidoDTO dto2 = PedidoDTO.builder().id(2L).status(status).build();
 
         when(pedidoRepository.findByFiltros(status, idCliente))
                 .thenReturn(List.of(pedido1, pedido2));
@@ -161,12 +188,33 @@ class PedidoServiceTest {
     @Test
     void deveAdicionarItensComSucesso() {
         Long pedidoId = 1L;
-        ItemDTO itemDTO = mock(ItemDTO.class);
-        Item item = mock(Item.class);
-        Pedido pedido = new Pedido();
-        pedido.setItens(new ArrayList<>());
-        Pedido pedidoAtualizado = mock(Pedido.class);
-        PedidoDTO pedidoDTOResposta = mock(PedidoDTO.class);
+
+        Pedido pedido = Pedido.builder()
+                .id(pedidoId)
+                .status(StatusEnum.CRIADO)
+                .build();
+
+        ItemDTO itemDTO = ItemDTO.builder()
+                .descricao("Produto X")
+                .quantidade(2)
+                .build();
+
+        Item item = Item.builder()
+                .descricao("Produto X")
+                .quantidade(2)
+                .build();
+
+        Pedido pedidoAtualizado = Pedido.builder()
+                .id(pedidoId)
+                .status(StatusEnum.CRIADO)
+                .itens(List.of(item))
+                .build();
+
+        PedidoDTO pedidoDTOResposta = PedidoDTO.builder()
+                .id(pedidoId)
+                .status(StatusEnum.CRIADO)
+                .itens(List.of(itemDTO))
+                .build();
 
         when(pedidoRepository.findById(pedidoId)).thenReturn(Optional.of(pedido));
         itemMapperMock.when(() -> ItemMapper.dtoToEntity(itemDTO)).thenReturn(item);
@@ -176,17 +224,19 @@ class PedidoServiceTest {
         PedidoDTO resultado = pedidoService.adicionarItens(pedidoId, List.of(itemDTO));
 
         assertThat(resultado).isEqualTo(pedidoDTOResposta);
-        assertThat(pedido.getItens()).contains(item);
-        verify(item).setPedido(pedido);
+        assertThat(pedido.getItens()).containsExactly(item);
+        assertThat(item.getPedido()).isEqualTo(pedido);
         verify(pedidoRepository).save(pedido);
     }
 
     @Test
     void deveLancarExcecaoAoAdicionarItensEmPedidoInexistente() {
         Long pedidoId = 500L;
+        ItemDTO itemDTO = ItemDTO.builder().descricao("Produto Y").build();
+
         when(pedidoRepository.findById(pedidoId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> pedidoService.adicionarItens(pedidoId, List.of(mock(ItemDTO.class))))
+        assertThatThrownBy(() -> pedidoService.adicionarItens(pedidoId, List.of(itemDTO)))
                 .isInstanceOf(IdNotFoundException.class);
 
         verify(pedidoRepository, never()).save(any());
@@ -197,7 +247,7 @@ class PedidoServiceTest {
     @Test
     void deveRemoverPedidoComSucesso() {
         Long pedidoId = 1L;
-        Pedido pedido = mock(Pedido.class);
+        Pedido pedido = Pedido.builder().id(pedidoId).build();
         when(pedidoRepository.findById(pedidoId)).thenReturn(Optional.of(pedido));
 
         pedidoService.removePedido(pedidoId);
@@ -221,10 +271,11 @@ class PedidoServiceTest {
     @Test
     void deveAtualizarStatusComSucesso() {
         Long pedidoId = 1L;
-        StatusEnum novoStatus = StatusEnum.CANCELADO; // ajuste para um valor válido do seu enum
-        Pedido pedido = mock(Pedido.class);
-        Pedido pedidoAtualizado = mock(Pedido.class);
-        PedidoDTO pedidoDTOResposta = mock(PedidoDTO.class);
+        StatusEnum novoStatus = StatusEnum.CRIADO;
+
+        Pedido pedido = Pedido.builder().id(pedidoId).status(StatusEnum.CRIADO).build();
+        Pedido pedidoAtualizado = Pedido.builder().id(pedidoId).status(novoStatus).build();
+        PedidoDTO pedidoDTOResposta = PedidoDTO.builder().id(pedidoId).status(novoStatus).build();
 
         when(pedidoRepository.findById(pedidoId)).thenReturn(Optional.of(pedido));
         when(pedidoRepository.save(pedido)).thenReturn(pedidoAtualizado);
@@ -233,7 +284,7 @@ class PedidoServiceTest {
         PedidoDTO resultado = pedidoService.atualizarStatus(pedidoId, novoStatus);
 
         assertThat(resultado).isEqualTo(pedidoDTOResposta);
-        verify(pedido).setStatus(novoStatus);
+        assertThat(pedido.getStatus()).isEqualTo(novoStatus);
         verify(pedidoRepository).save(pedido);
     }
 
@@ -242,7 +293,7 @@ class PedidoServiceTest {
         Long pedidoId = 42L;
         when(pedidoRepository.findById(pedidoId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> pedidoService.atualizarStatus(pedidoId, StatusEnum.CANCELADO))
+        assertThatThrownBy(() -> pedidoService.atualizarStatus(pedidoId, StatusEnum.CRIADO))
                 .isInstanceOf(IdNotFoundException.class);
 
         verify(pedidoRepository, never()).save(any());
